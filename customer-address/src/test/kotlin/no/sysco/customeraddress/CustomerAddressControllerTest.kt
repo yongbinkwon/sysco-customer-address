@@ -3,18 +3,22 @@ package no.sysco.customeraddress
 import no.sysco.customeraddress.dto.CustomerAddressDto
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.util.UriComponentsBuilder
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CustomerAddressControllerTest {
+class CustomerAddressControllerTest(
+    @Value("\${local.server.port}")
+    val port: Int
+) {
 
-    @LocalServerPort
-    private var port: Int = 0
+
 
     private val restTemplate = TestRestTemplate()
 
@@ -25,8 +29,11 @@ class CustomerAddressControllerTest {
 
     @Test
     fun `valid payload is correctly deserialized to dto`() {
+        val uri = UriComponentsBuilder.fromHttpUrl(customerAddressUrl)
+            .queryParam("id", "valid_id")
+            .toUriString()
         val payload = CustomerAddressDto(email = "test@mail.com", physicalAddress = "test street 123C")
-        Assertions.assertEquals(ResponseEntity<HttpStatus>(HttpStatus.OK), restTemplate.postForEntity<HttpStatus>(customerAddressUrl, payload, mapOf("id" to "valid_id")))
+        Assertions.assertEquals(HttpStatus.OK, restTemplate.postForEntity<String>(uri, payload).statusCode)
     }
 
     @Test
