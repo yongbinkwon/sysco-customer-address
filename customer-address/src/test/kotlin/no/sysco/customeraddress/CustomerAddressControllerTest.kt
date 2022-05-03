@@ -1,3 +1,5 @@
+package no.sysco.customeraddress
+
 import org.junit.jupiter.api.Test
 
 class CustomerAddressControllerTest {

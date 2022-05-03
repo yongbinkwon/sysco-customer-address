@@ -1,4 +1,4 @@
-package dto
+package no.sysco.customeraddress.dto
 
 data class CustomerAddressDto(
     val customerId: String,
