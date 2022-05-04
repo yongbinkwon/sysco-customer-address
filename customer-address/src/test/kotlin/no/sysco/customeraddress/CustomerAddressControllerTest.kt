@@ -99,7 +99,19 @@ class CustomerAddressControllerTest(
         )
     }
 
+    @Test
+    fun `no id in query param returns 400 bad request`() {
+        val payload = mapOf(
+            "email" to "test@sysco.com",
+            "physicalAddress" to "Vollsveien 2B"
+        )
 
+        assertEquals(
+            HttpStatus.BAD_REQUEST,
+            restTemplate.postForEntity<String>(customerAddressUrl, payload).statusCode
+        )
+
+    }
 
 
 }
