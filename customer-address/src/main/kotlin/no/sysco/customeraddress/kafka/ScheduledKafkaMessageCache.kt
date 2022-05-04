@@ -1,12 +1,13 @@
 package no.sysco.customeraddress.kafka
 
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 import javax.persistence.*
 
 
 @Repository
-class ScheduledKafkaMessageCache(
+internal class ScheduledKafkaMessageCache(
     @PersistenceContext private val entityManager: EntityManager
 ) {
     private val whitespaceRegex =  Regex("(\\s+)")
@@ -18,12 +19,12 @@ class ScheduledKafkaMessageCache(
         """.replace(whitespaceRegex, " ")
 
     @Transactional(readOnly = true)
-    fun getUnprocessedCustomerAddressUpdates() =
+    internal fun getUnprocessedCustomerAddressUpdates(): List<ScheduledKafkaMessage> =
         entityManager.createQuery(getUnprocessed, ScheduledKafkaMessage::class.java)
             .resultList
 
     @Transactional
-    fun scheduleCustomerAddressUpdate(scheduledKafkaMessage: ScheduledKafkaMessage) {
+    internal fun scheduleCustomerAddressUpdate(scheduledKafkaMessage: ScheduledKafkaMessage) {
         scheduledKafkaMessage.let {
             entityManager.find(ScheduledKafkaMessage::class.java, it.customerId).apply {
                 email = it.email
@@ -33,11 +34,22 @@ class ScheduledKafkaMessageCache(
         }
     }
 
+    private val deleteProcessed =
+        """
+            DELETE ScheduledKafkaMessage p
+            WHERE p.processed = TRUE
+        """.replace(whitespaceRegex, " ")
+
+    @Scheduled(cron = "0 0 0 * * *")
+    private fun purgeScheduledKafkaCache() {
+        entityManager.createQuery(deleteProcessed)
+    }
+
 }
 
 @Entity
 @Table(name = "SCHEDULED_KAFKA_MESSAGES")
-open class ScheduledKafkaMessage(
+internal open class ScheduledKafkaMessage(
     @Id
     @Column(name = "CUSTOMER_ID")
     val customerId: String = "",

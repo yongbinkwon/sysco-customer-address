@@ -2,7 +2,7 @@ package no.sysco.customeraddress.dto
 
 import no.sysco.customeraddress.kafka.ScheduledKafkaMessage
 
-data class CustomerAddressDto(
+internal data class CustomerAddressDto(
     val email: String,
     val physicalAddress: String
 
@@ -11,5 +11,12 @@ data class CustomerAddressDto(
         private val EMAIL_PATTERN = Regex("""^[^@\s]+@[^@\s]+\.[^@\s]+$""")
     }
 
-    fun suspiciousMail() = !EMAIL_PATTERN.containsMatchIn(email)
+    internal fun suspiciousMail() = !EMAIL_PATTERN.containsMatchIn(email)
+
+    internal fun toScheduledKafkaMessage(customerId: String) =
+        ScheduledKafkaMessage(
+            customerId = customerId,
+            email = email,
+            physicalAddress = physicalAddress,
+        )
 }

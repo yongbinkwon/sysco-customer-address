@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-internal class CustomerAddressProducer {
+internal class CustomerAddressUpdateProducer {
 
     private val producer = KafkaProducer<String, CustomerAddress>(
         Properties().apply {
@@ -27,15 +27,20 @@ internal class CustomerAddressProducer {
 
     private val topic = "sysco-customer-address-v1"
 
-    internal fun publishCustomerAddress(customerId: String, customerAddressDto: CustomerAddressDto) {
-        val avroMessage = CustomerAddress(customerAddressDto.email, customerAddressDto.physicalAddress)
-        producer.send(
-            ProducerRecord(
-                topic,
-                customerId,
-                avroMessage
+    internal fun publishCustomerAddressUpdate(scheduledKafkaMessage: ScheduledKafkaMessage): Boolean {
+        return try {
+            val avroMessage = CustomerAddress(scheduledKafkaMessage.email, scheduledKafkaMessage.physicalAddress)
+            producer.send(
+                ProducerRecord(
+                    topic,
+                    scheduledKafkaMessage.customerId,
+                    avroMessage
+                )
             )
-        )
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
 }
