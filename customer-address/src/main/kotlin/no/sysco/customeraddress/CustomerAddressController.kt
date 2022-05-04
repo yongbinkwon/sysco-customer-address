@@ -1,6 +1,8 @@
 package no.sysco.customeraddress
 
 import no.sysco.customeraddress.dto.CustomerAddressDto
+import no.sysco.customeraddress.kafka.CustomerAddressProducer
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -14,14 +16,18 @@ class CustomerAddressController(
     private val suspiciousEmailMsg: String,
 
     @Value("\${http-ok-message.valid}")
-    private val validMsg: String
+    private val validMsg: String,
 ) {
+
+    @Autowired
+    private lateinit var customerAddressProducer: CustomerAddressProducer
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun updateCustomerAddress(
         @RequestParam(name = "id", required = true) customerId: String,
         @RequestBody customerAddress: CustomerAddressDto
     ): ResponseEntity<String> {
+        customerAddressProducer.publishCustomerAddress(customerId, customerAddress)
         if(customerAddress.suspiciousMail()) {
             return ResponseEntity(suspiciousEmailMsg, HttpStatus.OK)
         }
