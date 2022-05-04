@@ -19,7 +19,10 @@ repositories {
 }
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -30,9 +33,10 @@ dependencies {
 
     //kafka
     implementation("io.confluent:kafka-avro-serializer:5.3.0")
-    implementation("org.springframework.kafka:spring-kafka:2.8.5")
     implementation("org.apache.avro:avro:1.11.0")
+    implementation("org.springframework.kafka:spring-kafka:2.8.5")
 
+    implementation("org.hibernate.validator:hibernate-validator")
 
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")

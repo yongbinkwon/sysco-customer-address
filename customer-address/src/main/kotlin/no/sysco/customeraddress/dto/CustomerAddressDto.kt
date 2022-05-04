@@ -1,5 +1,7 @@
 package no.sysco.customeraddress.dto
 
+import no.sysco.customeraddress.kafka.ScheduledKafkaMessage
+
 data class CustomerAddressDto(
     val email: String,
     val physicalAddress: String
