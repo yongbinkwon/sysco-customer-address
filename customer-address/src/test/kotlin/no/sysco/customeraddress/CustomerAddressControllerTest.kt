@@ -18,8 +18,6 @@ class CustomerAddressControllerTest(
     val port: Int
 ) {
 
-
-
     private val restTemplate = TestRestTemplate()
 
     private val baseUrl = "http://localhost:$port"
@@ -32,7 +30,10 @@ class CustomerAddressControllerTest(
         val uri = UriComponentsBuilder.fromHttpUrl(customerAddressUrl)
             .queryParam("id", "valid_id")
             .toUriString()
-        val payload = CustomerAddressDto(email = "test@mail.com", physicalAddress = "test street 123C")
+        val payload = mapOf(
+            "email" to "test@sysco.com",
+            "physicalAddress" to "Vollsveien 2B"
+        )
         Assertions.assertEquals(HttpStatus.OK, restTemplate.postForEntity<String>(uri, payload).statusCode)
     }
 
