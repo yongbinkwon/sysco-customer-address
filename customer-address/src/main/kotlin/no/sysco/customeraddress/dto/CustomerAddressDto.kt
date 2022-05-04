@@ -6,6 +6,8 @@ data class CustomerAddressDto(
 
 ) {
     companion object {
-        val EMAIL_PATTERN = Regex("""^[^@\s]+@[^@\s]+\.[^@\s]+$""")
+        private val EMAIL_PATTERN = Regex("""^[^@\s]+@[^@\s]+\.[^@\s]+$""")
     }
+
+    fun suspiciousMail() = !EMAIL_PATTERN.containsMatchIn(email)
 }

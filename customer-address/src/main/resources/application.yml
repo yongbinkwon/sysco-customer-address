@@ -1,0 +1,3 @@
+http-ok-message:
+  suspicious-email: Update successful. We suspect there is a typo in your email, please double check that everything has been written correctly
+  valid: Update successful
