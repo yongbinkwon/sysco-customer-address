@@ -1,0 +1,7 @@
+@namespace("no.sysco.customeraddress.avro")
+protocol CustomerAddressProtocol {
+	record CustomerAddress {
+		string email;
+		string physicalAddress;
+	}
+}
