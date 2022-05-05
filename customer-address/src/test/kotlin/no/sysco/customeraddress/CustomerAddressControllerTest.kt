@@ -11,9 +11,9 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.util.UriComponentsBuilder
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CustomerAddressControllerTest(
+internal class CustomerAddressControllerTest(
     @Value("\${local.server.port}")
-    val port: Int,
+    private val port: Int,
 
     @Value("\${http-ok-message.valid}")
     private val validMsg: String,
@@ -35,7 +35,7 @@ class CustomerAddressControllerTest(
 
 
     @Test
-    fun `valid payload is correctly deserialized to dto`() {
+    internal fun `valid payload is correctly deserialized to dto`() {
         val payload = mapOf(
             "email" to "test@sysco.com",
             "physicalAddress" to "Vollsveien 2B"
@@ -57,7 +57,7 @@ class CustomerAddressControllerTest(
     }
 
     @Test
-    fun `payload missing any field returns 400 bad request`() {
+    internal fun `payload missing any field returns 400 bad request`() {
         val payloadWithoutPhysicalAddress = mapOf("email" to "invalid@sysco.com")
         val payloadWithoutEmailAddress = mapOf("physicalAddress" to "Høgskoleringen 1")
 
@@ -78,7 +78,7 @@ class CustomerAddressControllerTest(
     }
 
     @Test
-    fun `invalid email returns 200 with a warning message`() {
+    internal fun `invalid email returns 200 with a warning message`() {
         val payload = mapOf(
             "email" to "invalidmail.com",
             "physicalAddress" to "Vollsveien 2B"
@@ -100,7 +100,7 @@ class CustomerAddressControllerTest(
     }
 
     @Test
-    fun `no id in query param returns 400 bad request`() {
+    internal fun `no id in query param returns 400 bad request`() {
         val payload = mapOf(
             "email" to "test@sysco.com",
             "physicalAddress" to "Vollsveien 2B"

@@ -44,7 +44,7 @@ internal class ScheduledKafkaMessageCache(
 
     @Transactional
     @Scheduled(cron = "0 0 0 * * *")
-    fun purgeScheduledKafkaCache() {
+    internal fun purgeScheduledKafkaCache() {
         entityManager.createQuery(deleteProcessed)
     }
 

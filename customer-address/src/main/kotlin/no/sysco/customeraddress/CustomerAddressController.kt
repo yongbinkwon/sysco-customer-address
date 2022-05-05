@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -27,7 +26,7 @@ internal class CustomerAddressController(
     }
 
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
-    internal fun updateCustomerAddress(
+    fun updateCustomerAddress(
         @RequestParam(name = "id", required = true) customerId: String,
         @RequestBody customerAddress: CustomerAddressDto
     ): ResponseEntity<String> {

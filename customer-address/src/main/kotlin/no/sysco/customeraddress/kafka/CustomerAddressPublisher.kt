@@ -17,7 +17,7 @@ internal class CustomerAddressPublisher(
 
     @Transactional
     @Scheduled(initialDelay = 1000*20*1, fixedDelay = 1000*20*1)
-    fun publishCustomerAddressUpdates() {
+    internal fun publishCustomerAddressUpdates() {
         log.info("SCHEDULED TASK STARTED")
         val unprocessedCustomerAddressUpdates = scheduledKafkaMessageCache.getUnprocessedCustomerAddressUpdates()
         log.info("NUMBER OF UNPROCESSED CUSTOMER ADDRESS UPDATES: ${unprocessedCustomerAddressUpdates.size}")
