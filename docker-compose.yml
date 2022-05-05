@@ -53,7 +53,7 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
 
-  db:
+  db1:
     image: postgres:14.1-alpine
     restart: always
     environment:
@@ -62,4 +62,15 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+      - ./init_db1.sql:/docker-entrypoint-initdb.d/init_db1.sql
+
+  db2:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5433:5432'
+    volumes:
+      - ./init_db2.sql:/docker-entrypoint-initdb.d/init_db2.sql

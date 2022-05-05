@@ -1,4 +1,4 @@
-package no.sysco.customer
+package no.sysco.customer.kafka
 
 import io.confluent.kafka.serializers.KafkaAvroDeserializer
 import org.apache.avro.generic.GenericRecord

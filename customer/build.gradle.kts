@@ -19,9 +19,12 @@ dependencies {
 
     //spring boot
     implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     //kafka
     implementation("io.confluent:kafka-avro-serializer:5.3.0")
     implementation("org.apache.avro:avro:1.11.0")
     implementation("org.springframework.kafka:spring-kafka:2.8.5")
+
+    implementation("org.postgresql:postgresql:42.2.13")
 }
