@@ -1,3 +1,10 @@
 http-ok-message:
   suspicious-email: Update successful. We suspect there is a typo in your email, please double check that everything has been written correctly
   valid: Update successful
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver

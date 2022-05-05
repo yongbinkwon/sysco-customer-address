@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "2.4.1"
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
-    kotlin("jvm") version "1.5.30"
+    kotlin("jvm")
     kotlin("plugin.spring") version "1.4.21"
     id("com.github.davidmc24.gradle.plugin.avro") version "1.3.0"
 }
@@ -36,8 +36,7 @@ dependencies {
     implementation("org.apache.avro:avro:1.11.0")
     implementation("org.springframework.kafka:spring-kafka:2.8.5")
 
-    implementation("org.hibernate.validator:hibernate-validator")
-
+    implementation("org.postgresql:postgresql:42.2.13")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }

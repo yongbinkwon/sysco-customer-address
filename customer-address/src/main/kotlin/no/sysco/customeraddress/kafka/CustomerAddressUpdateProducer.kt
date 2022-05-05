@@ -5,14 +5,18 @@ import org.apache.kafka.common.serialization.StringSerializer
 import io.confluent.kafka.serializers.KafkaAvroSerializer
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig.*
 import no.sysco.customeraddress.avro.CustomerAddress
-import no.sysco.customeraddress.dto.CustomerAddressDto
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 internal class CustomerAddressUpdateProducer {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(CustomerAddressUpdateProducer::class.java)
+    }
 
     private val producer = KafkaProducer<String, CustomerAddress>(
         Properties().apply {
@@ -27,7 +31,7 @@ internal class CustomerAddressUpdateProducer {
 
     private val topic = "sysco-customer-address-v1"
 
-    internal fun publishCustomerAddressUpdate(scheduledKafkaMessage: ScheduledKafkaMessage): Boolean {
+    internal fun publishCustomerAddressUpdate(scheduledKafkaMessage: ScheduledKafkaMessages): Boolean {
         return try {
             val avroMessage = CustomerAddress(scheduledKafkaMessage.email, scheduledKafkaMessage.physicalAddress)
             producer.send(
@@ -39,6 +43,7 @@ internal class CustomerAddressUpdateProducer {
             )
             true
         } catch (e: Exception) {
+            log.warn("failed to publish scheduledKafkaMessage wit customerId: ${scheduledKafkaMessage.customerId}", e)
             false
         }
     }

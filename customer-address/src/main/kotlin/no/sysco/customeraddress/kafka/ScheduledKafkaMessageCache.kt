@@ -19,18 +19,20 @@ internal class ScheduledKafkaMessageCache(
         """.replace(whitespaceRegex, " ")
 
     @Transactional(readOnly = true)
-    internal fun getUnprocessedCustomerAddressUpdates(): List<ScheduledKafkaMessage> =
-        entityManager.createQuery(getUnprocessed, ScheduledKafkaMessage::class.java)
+    internal fun getUnprocessedCustomerAddressUpdates(): List<ScheduledKafkaMessages> =
+        entityManager.createQuery(getUnprocessed, ScheduledKafkaMessages::class.java)
             .resultList
 
     @Transactional
-    internal fun scheduleCustomerAddressUpdate(scheduledKafkaMessage: ScheduledKafkaMessage) {
-        scheduledKafkaMessage.let {
-            entityManager.find(ScheduledKafkaMessage::class.java, it.customerId).apply {
-                email = it.email
-                physicalAddress = it.physicalAddress
-                processed = false
-            } ?: entityManager.persist(scheduledKafkaMessage)
+    internal fun scheduleCustomerAddressUpdate(scheduledKafkaMessages: ScheduledKafkaMessages) {
+        scheduledKafkaMessages.let { updatedCustomerAddress ->
+            entityManager.find(ScheduledKafkaMessages::class.java, updatedCustomerAddress.customerId)?.apply {
+                if (email != updatedCustomerAddress.email || physicalAddress != updatedCustomerAddress.physicalAddress) {
+                    email = updatedCustomerAddress.email
+                    physicalAddress = updatedCustomerAddress.physicalAddress
+                    processed = false
+                }
+            } ?: entityManager.persist(scheduledKafkaMessages)
         }
     }
 
@@ -40,8 +42,9 @@ internal class ScheduledKafkaMessageCache(
             WHERE p.processed = TRUE
         """.replace(whitespaceRegex, " ")
 
+    @Transactional
     @Scheduled(cron = "0 0 0 * * *")
-    private fun purgeScheduledKafkaCache() {
+    fun purgeScheduledKafkaCache() {
         entityManager.createQuery(deleteProcessed)
     }
 
@@ -49,17 +52,17 @@ internal class ScheduledKafkaMessageCache(
 
 @Entity
 @Table(name = "SCHEDULED_KAFKA_MESSAGES")
-internal open class ScheduledKafkaMessage(
+internal open class ScheduledKafkaMessages(
     @Id
     @Column(name = "CUSTOMER_ID")
-    val customerId: String = "",
+    open val customerId: String = "",
 
     @Column(name = "EMAIL")
-    var email: String = "",
+    open var email: String = "",
 
     @Column(name = "PHYSICAL_ADDRESS")
-    var physicalAddress: String = "",
+    open var physicalAddress: String = "",
 
     @Column(name = "PROCESSED")
-    var processed: Boolean = false
+    open var processed: Boolean = false
 )
