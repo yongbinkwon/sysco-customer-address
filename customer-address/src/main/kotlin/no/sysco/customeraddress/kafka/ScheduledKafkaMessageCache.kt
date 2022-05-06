@@ -10,7 +10,7 @@ import javax.persistence.*
 internal class ScheduledKafkaMessageCache(
     @PersistenceContext private val entityManager: EntityManager
 ) {
-    private val whitespaceRegex =  Regex("(\\s+)")
+    private val whitespaceRegex = Regex("(\\s+)")
 
     private val getUnprocessed =
         """
@@ -19,33 +19,34 @@ internal class ScheduledKafkaMessageCache(
         """.replace(whitespaceRegex, " ")
 
     @Transactional(readOnly = true)
-    internal fun getUnprocessedCustomerAddressUpdates(): List<ScheduledKafkaMessages> =
+    fun getUnprocessedCustomerAddressUpdates(): List<ScheduledKafkaMessages> =
         entityManager.createQuery(getUnprocessed, ScheduledKafkaMessages::class.java)
             .resultList
 
     @Transactional
-    internal fun scheduleCustomerAddressUpdate(scheduledKafkaMessages: ScheduledKafkaMessages) {
-        scheduledKafkaMessages.let { updatedCustomerAddress ->
-            entityManager.find(ScheduledKafkaMessages::class.java, updatedCustomerAddress.customerId)?.apply {
-                if (email != updatedCustomerAddress.email || physicalAddress != updatedCustomerAddress.physicalAddress) {
-                    email = updatedCustomerAddress.email
-                    physicalAddress = updatedCustomerAddress.physicalAddress
-                    processed = false
-                }
-            } ?: entityManager.persist(scheduledKafkaMessages)
-        }
+    fun scheduleCustomerAddressUpdate(updatedCustomerAddress: ScheduledKafkaMessages) {
+        entityManager.find(
+            ScheduledKafkaMessages::class.java,
+            updatedCustomerAddress.customerId
+        )?.apply {
+            if (updatedCustomerAddress isDifferentTo this) {
+                email = updatedCustomerAddress.email
+                physicalAddress = updatedCustomerAddress.physicalAddress
+                processed = false
+            }
+        } ?: entityManager.persist(updatedCustomerAddress)
     }
 
     private val deleteProcessed =
         """
-            DELETE ScheduledKafkaMessage p
+            DELETE ScheduledKafkaMessages p
             WHERE p.processed = TRUE
         """.replace(whitespaceRegex, " ")
 
     @Transactional
     @Scheduled(cron = "0 0 0 * * *")
-    internal fun purgeScheduledKafkaCache() {
-        entityManager.createQuery(deleteProcessed)
+    fun purgeScheduledKafkaMessageCache() {
+        entityManager.createQuery(deleteProcessed).executeUpdate()
     }
 
 }
@@ -65,4 +66,14 @@ internal open class ScheduledKafkaMessages(
 
     @Column(name = "PROCESSED")
     open var processed: Boolean = false
-)
+) {
+    override fun equals(other: Any?) =
+        other is ScheduledKafkaMessages &&
+                customerId == other.customerId &&
+                email == other.email &&
+                physicalAddress == other.physicalAddress &&
+                processed == other.processed
+
+    infix fun isDifferentTo(other: ScheduledKafkaMessages) =
+        email != other.email || physicalAddress != other.physicalAddress
+}

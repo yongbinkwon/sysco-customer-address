@@ -8,6 +8,6 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @SpringBootApplication
 internal class CustomerAddressApplication
 
-internal fun main(args: Array<String>) {
+fun main(args: Array<String>) {
     runApplication<CustomerAddressApplication>(*args)
 }
