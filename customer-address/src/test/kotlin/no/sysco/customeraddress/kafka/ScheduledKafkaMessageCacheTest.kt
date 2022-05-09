@@ -9,11 +9,12 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.FilterType
 import org.springframework.stereotype.Repository
 import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 
 @DataJpaTest(includeFilters = [ComponentScan.Filter(type = FilterType.ANNOTATION, classes = [Repository::class])])
 internal class ScheduledKafkaMessageCacheTest @Autowired constructor(
     private val scheduledKafkaMessageCache: ScheduledKafkaMessageCache,
-    private val entityManager: EntityManager
+    @PersistenceContext private val entityManager: EntityManager
 ) {
 
     private val whitespaceRegex = Regex("(\\s+)")
