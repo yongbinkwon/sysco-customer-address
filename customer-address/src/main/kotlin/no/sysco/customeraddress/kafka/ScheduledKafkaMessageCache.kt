@@ -3,6 +3,7 @@ package no.sysco.customeraddress.kafka
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
+import java.time.ZonedDateTime
 import javax.persistence.*
 
 
@@ -33,6 +34,7 @@ internal class ScheduledKafkaMessageCache(
                 email = updatedCustomerAddress.email
                 physicalAddress = updatedCustomerAddress.physicalAddress
                 processed = false
+                lastUpdated = ZonedDateTime.now()
             }
         } ?: entityManager.persist(updatedCustomerAddress)
     }
@@ -65,8 +67,15 @@ internal open class ScheduledKafkaMessages(
     open var physicalAddress: String = "",
 
     @Column(name = "PROCESSED")
-    open var processed: Boolean = false
+    open var processed: Boolean = false,
+
+    @Column(name = "CREATED")
+    open val created: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column(name = "LAST_UPDATED")
+    open var lastUpdated: ZonedDateTime = ZonedDateTime.now()
 ) {
+    //not sure whether to include created and lastUpdated here
     override fun equals(other: Any?) =
         other is ScheduledKafkaMessages &&
                 customerId == other.customerId &&

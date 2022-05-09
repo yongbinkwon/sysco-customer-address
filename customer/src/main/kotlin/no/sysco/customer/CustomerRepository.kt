@@ -2,6 +2,7 @@ package no.sysco.customer
 
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
+import java.time.ZonedDateTime
 import javax.persistence.*
 
 //should just use crud or jparepo here
@@ -19,8 +20,13 @@ internal class CustomerRepository(
         entityManager.find(Customer::class.java, customerId)?.apply {
             this.email = email
             this.physicalAddress = physicalAddress
+            this.lastUpdated = ZonedDateTime.now()
         } ?: entityManager.persist(
-            Customer(customerId, email, physicalAddress)
+            Customer(
+                customerId = customerId,
+                email = email,
+                physicalAddress = physicalAddress
+            )
         )
     }
 
@@ -37,5 +43,11 @@ internal open class Customer(
     open var email: String = "",
 
     @Column(name = "PHYSICAL_ADDRESS")
-    open var physicalAddress: String = ""
+    open var physicalAddress: String = "",
+
+    @Column(name = "CREATED")
+    open val created: ZonedDateTime = ZonedDateTime.now(),
+
+    @Column(name = "LAST_UPDATED")
+    open var lastUpdated: ZonedDateTime = ZonedDateTime.now()
 )
