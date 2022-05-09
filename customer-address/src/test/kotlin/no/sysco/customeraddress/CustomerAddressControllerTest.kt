@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @ExtendWith(SpringExtension::class)
 @WebMvcTest(controllers = [CustomerAddressController::class])
-internal class IntegrationTest @Autowired constructor(
+internal class CustomerAddressControllerTest @Autowired constructor(
     private val mockMvc: MockMvc,
 
     @Value("\${http-ok-message.suspicious-email}")
@@ -36,7 +36,7 @@ internal class IntegrationTest @Autowired constructor(
         MockMvcRequestBuilders
             .post("/customer/address")
             .queryParam("id", customerId)
-            .content(IntegrationTest::class.java.getResource(payloadPath)?.readText() ?: "")
+            .content(CustomerAddressControllerTest::class.java.getResource(payloadPath)?.readText() ?: "")
             .contentType(MediaType.APPLICATION_JSON)
     )
 

@@ -56,7 +56,7 @@ internal class ScheduledKafkaMessageCacheTest @Autowired constructor(
     }
 
     @Test
-    fun `multiple schduled messages are inserted into cache given their customer ids are unique`() {
+    fun `multiple scheduled messages are inserted into cache given their customer ids are unique`() {
         val scheduledKafkaMessage = ScheduledKafkaMessages(
             customerId = "valid_id",
             email = "hello@cegal.com",

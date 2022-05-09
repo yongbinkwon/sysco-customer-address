@@ -43,7 +43,7 @@ internal class CustomerAddressUpdateProducer {
             )
             true
         } catch (e: Exception) {
-            log.warn("failed to publish scheduledKafkaMessage wit customerId: ${scheduledKafkaMessage.customerId}", e)
+            log.warn("failed to publish scheduledKafkaMessage with customerId: ${scheduledKafkaMessage.customerId}", e)
             false
         }
     }
