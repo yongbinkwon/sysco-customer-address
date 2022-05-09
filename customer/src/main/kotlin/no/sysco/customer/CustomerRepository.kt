@@ -16,7 +16,10 @@ internal class CustomerRepository(
         email: String,
         physicalAddress: String
     ) {
-        entityManager.persist(
+        entityManager.find(Customer::class.java, customerId)?.apply {
+            this.email = email
+            this.physicalAddress = physicalAddress
+        } ?: entityManager.persist(
             Customer(customerId, email, physicalAddress)
         )
     }
