@@ -10,6 +10,6 @@ To run the program locally:
 * you can now do post requests on "localhost:8080/customer/address". Details are found in the swagger.
 
 
-Assumptions
+Assumptions:
 * for the same customer only the most recent customer address sent in (within a time frame) is produced as a kafka message. Similarly only the most recent customer address is stored in the databasee by the consume-service
 * customer address is assumed to be physical address + email address
