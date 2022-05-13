@@ -12,4 +12,4 @@ To run the program locally:
 
 Assumptions:
 * for the same customer only the most recent customer address sent in (within a time frame) is produced as a kafka message. Similarly only the most recent customer address is stored in the databasee by the consume-service
-* customer address is assumed to be physical address + email address
+* customer address is assumed to be physical address + email address.
